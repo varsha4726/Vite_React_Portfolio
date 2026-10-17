@@ -61,7 +61,9 @@
     }
   }
 }
-
+html {
+  scroll-behavior: smooth;
+}
 @layer base {
   :root {
     --background: 210 40% 98%;

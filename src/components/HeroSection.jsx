@@ -18,15 +18,14 @@ const [downloaded, setDownloaded] = useState(false);
     setDownloading(false);
     setDownloaded(true);
 
-    window.open("/Varsha_ss.pdf", "_blank");
+    window.open("/varsha.ss.pdf", "_blank");
 
     setTimeout(() => setDownloaded(false), 2000);
   }, 1800);
 };
 
   return (
-    <section
-      id="hero"
+    <section id="HeroSection"
       ref={ref}
       className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-br from-background via-background/95 to-primary/10"
     >
@@ -83,7 +82,7 @@ const [downloaded, setDownloaded] = useState(false);
                   2000,
                   "MERN Stack Developer",
                   2000,
-                  "Frontend Engineer",
+                  "Frontend Developer",
                   2000
                 ]}
                 wrapper="span"
@@ -98,8 +97,8 @@ const [downloaded, setDownloaded] = useState(false);
               className="text-lg sm:text-xl text-muted-foreground mt-6 leading-relaxed"
               variants={{ hidden: { y: 30, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
             >
-              I build <span className="text-primary font-semibold">modern web applications </span>
-               using React, js and scalable technologies to create powerful digital experiences.
+              I build <span className="text-primary font-semibold">modern, responsive web applications </span>
+               using React.js, Next.js, TypeScript, and scalable frontend technologies to create clean, fast, and user-friendly digital experiences
             </motion.p>
 
             {/* Buttons */}
@@ -109,7 +108,7 @@ const [downloaded, setDownloaded] = useState(false);
             >
 
               <a
-                href="#projects"
+                href="#ProjectsSection"
                 className="px-8 py-4 rounded-xl font-semibold bg-gradient-to-r from-primary to-purple-600 text-white flex items-center gap-2"
               >
                 <Code className="h-4 w-4" />
@@ -117,7 +116,7 @@ const [downloaded, setDownloaded] = useState(false);
               </a>
 
               <a
-                href="#contact"
+                href="#ContactSection"
                 className="px-8 py-4 rounded-xl border border-primary text-foreground flex items-center gap-2"
               >
                 <Mail className="h-4 w-4" />

@@ -104,7 +104,7 @@ export const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 relative bg-background">
+   <section id="ContactSection" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 relative bg-background">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-12 sm:mb-16">
           <span className="inline-block px-3 py-1 text-xs sm:text-sm font-medium rounded-full bg-primary/10 text-primary mb-3 sm:mb-4">
@@ -233,7 +233,7 @@ export const ContactSection = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all text-sm sm:text-base"
-                  placeholder="John Doe"
+                  placeholder="Enter your Name"
                 />
               </div>
 
@@ -252,7 +252,7 @@ export const ContactSection = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all text-sm sm:text-base"
-                  placeholder="john@example.com"
+                  placeholder="Enter your Email"
                 />
               </div>
 

@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useTheme } from "next-themes";
 import {
   Home,
   User,
@@ -6,7 +7,6 @@ import {
   Briefcase,
   MessageSquare,
   Mail,
-  BookOpen,
   Sun,
   Moon,
   Youtube,
@@ -16,36 +16,27 @@ import {
   Linkedin,
   Globe,
   X,
+  Power,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Power } from "lucide-react";
 
 const navItems = [
-  { name: "Home", href: "#hero", icon: Home },
-  { name: "About", href: "#about", icon: User },
-  { name: "Skills", href: "#skills", icon: Code },
-  { name: "Projects", href: "#projects", icon: Briefcase },
-  { name: "Certificates", href: "#CertificatesSection", icon: MessageSquare },
-  { name: "Contact", href: "#contact", icon: Mail },
+  { name: "Home", href: "#HeroSection", icon: Home },
+  { name: "About", href: "#AboutSection", icon: User },
+  { name: "Skills", href: "#SkillsSection", icon: Code },
+  { name: "Projects", href: "#ProjectsSection", icon: Briefcase },
+  { name: "Certificates", href: "#certificates", icon: MessageSquare },
+  { name: "Contact", href: "#ContactSection", icon: Mail },
 ];
 
 const ThemeToggle = () => {
-  const [theme, setTheme] = useState("light");
+  const { theme, setTheme } = useTheme();
 
-  useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    if (stored === "dark") {
-      document.documentElement.classList.add("dark");
-      setTheme("dark");
-    }
-  }, []);
+  const isDark = theme !== "light";
 
   const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    document.documentElement.classList.toggle("dark");
-    localStorage.setItem("theme", newTheme);
-    setTheme(newTheme);
+    setTheme(isDark ? "light" : "dark");
   };
 
   return (
@@ -55,23 +46,31 @@ const ThemeToggle = () => {
       title="Toggle theme"
       aria-label="Toggle theme"
     >
-      {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      {isDark ? (
+        <Sun className="w-5 h-5" />
+      ) : (
+        <Moon className="w-5 h-5" />
+      )}
     </button>
   );
 };
 
 export const Navbar = () => {
-  const [activeSection, setActiveSection] = useState("#hero");
+  const [activeSection, setActiveSection] = useState("#HeroSection");
   const [showNavbar, setShowNavbar] = useState(true);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [isAudioReady, setIsAudioReady] = useState(false);
   const [showClosePopup, setShowClosePopup] = useState(false);
   const [emoji, setEmoji] = useState("😊");
+
   const lastScrollYRef = useRef(0);
   const audioRef = useRef(null);
 
   const musicUrl = "/music.mp3";
 
+  // -----------------------------
+  // Music setup
+  // -----------------------------
   useEffect(() => {
     if (typeof window !== "undefined") {
       audioRef.current = new Audio(musicUrl);
@@ -79,37 +78,59 @@ export const Navbar = () => {
       audioRef.current.volume = 0.5;
       audioRef.current.preload = "auto";
 
-      const handleCanPlay = () => setIsAudioReady(true);
+      const handleCanPlay = () => {
+        setIsAudioReady(true);
+      };
 
-      audioRef.current.addEventListener("canplaythrough", handleCanPlay);
+      audioRef.current.addEventListener(
+        "canplaythrough",
+        handleCanPlay
+      );
 
       return () => {
         if (audioRef.current) {
           audioRef.current.pause();
-          audioRef.current.removeEventListener("canplaythrough", handleCanPlay);
+          audioRef.current.removeEventListener(
+            "canplaythrough",
+            handleCanPlay
+          );
           audioRef.current = null;
         }
       };
     }
   }, []);
 
+  // -----------------------------
+  // Music toggle
+  // -----------------------------
   const toggleMusic = () => {
     if (!audioRef.current || !isAudioReady) return;
 
     if (isMusicPlaying) {
       audioRef.current.pause();
+      setIsMusicPlaying(false);
     } else {
-      audioRef.current.play().catch(console.error);
+      audioRef.current
+        .play()
+        .then(() => {
+          setIsMusicPlaying(true);
+        })
+        .catch(console.error);
     }
-
-    setIsMusicPlaying(!isMusicPlaying);
   };
 
+  // -----------------------------
+  // Navbar scroll + active section
+  // -----------------------------
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      if (currentScrollY > lastScrollYRef.current && currentScrollY > 100) {
+      // Hide navbar while scrolling down
+      if (
+        currentScrollY > lastScrollYRef.current &&
+        currentScrollY > 100
+      ) {
         setShowNavbar(false);
       } else {
         setShowNavbar(true);
@@ -117,11 +138,12 @@ export const Navbar = () => {
 
       lastScrollYRef.current = currentScrollY;
 
-      const sections = navItems.map((item) => item.href);
-      const scrollPosition = currentScrollY + 100;
+      // Detect active section
+      const scrollPosition = currentScrollY + 150;
 
-      for (const section of sections) {
-        const element = document.querySelector(section);
+      for (const item of navItems) {
+        const element = document.querySelector(item.href);
+
         if (element) {
           const offsetTop = element.offsetTop;
           const offsetHeight = element.offsetHeight;
@@ -130,7 +152,7 @@ export const Navbar = () => {
             scrollPosition >= offsetTop &&
             scrollPosition < offsetTop + offsetHeight
           ) {
-            setActiveSection(section);
+            setActiveSection(item.href);
             break;
           }
         }
@@ -138,8 +160,35 @@ export const Navbar = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    // Run once when page loads
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
+
+  // -----------------------------
+  // Navbar link click
+  // -----------------------------
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+
+    const target = document.querySelector(href);
+
+    if (target) {
+      setActiveSection(href);
+
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+
+      // Keep URL hash updated
+      window.history.replaceState(null, "", href);
+    }
+  };
 
   return (
     <>
@@ -150,8 +199,6 @@ export const Navbar = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        
-
         {/* Website Globe Button */}
         <motion.a
           href="https://portfolio-varsh.web.app"
@@ -173,7 +220,7 @@ export const Navbar = () => {
 
         {/* GitHub Button */}
         <motion.a
-          href="https://github.com/varsha4726" 
+          href="https://github.com/varsha4726"
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
@@ -190,56 +237,69 @@ export const Navbar = () => {
           <Github className="w-4 h-4" />
         </motion.a>
 
-
         {/* Music Button */}
         <motion.button
           onClick={toggleMusic}
-         disabled={false}
+          disabled={false}
           className={cn(
             "p-2 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-md",
             "text-primary hover:bg-primary/10 dark:hover:bg-primary/20",
             "border border-gray-200 dark:border-gray-700 shadow-sm",
-            "flex items-center justify-center",
-           
+            "flex items-center justify-center"
           )}
-          whileHover={{ scale: isAudioReady ? 1.05 : 1 }}
-          whileTap={{ scale: isAudioReady ? 0.95 : 1 }}
+          whileHover={{
+            scale: isAudioReady ? 1.05 : 1,
+          }}
+          whileTap={{
+            scale: isAudioReady ? 0.95 : 1,
+          }}
           title={
-            isAudioReady ? (isMusicPlaying ? "Pause music" : "Play music") : "Loading music..."
+            isAudioReady
+              ? isMusicPlaying
+                ? "Pause music"
+                : "Play music"
+              : "Loading music..."
           }
           aria-label={
-            isAudioReady ? (isMusicPlaying ? "Pause music" : "Play music") : "Loading music"
+            isAudioReady
+              ? isMusicPlaying
+                ? "Pause music"
+                : "Play music"
+              : "Loading music"
           }
         >
-          {isMusicPlaying ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+          {isMusicPlaying ? (
+            <Volume2 className="w-4 h-4" />
+          ) : (
+            <VolumeX className="w-4 h-4" />
+          )}
         </motion.button>
 
         {/* Close Website Button */}
-<motion.button
-
-  onClick={() => setShowClosePopup(true)}
-  className={cn(
-    "p-2 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-md",
-    "text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50",
-    "border border-gray-200 dark:border-gray-700 shadow-sm",
-    "flex items-center justify-center"
-  )}
-  whileHover={{ scale: 1.05 }}
-  whileTap={{ scale: 0.95 }}
-  title="Close Website"
->
-  <Power className="w-4 h-4 text-red-500" />
-</motion.button>
+        <motion.button
+          onClick={() => setShowClosePopup(true)}
+          className={cn(
+            "p-2 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-md",
+            "text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50",
+            "border border-gray-200 dark:border-gray-700 shadow-sm",
+            "flex items-center justify-center"
+          )}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          title="Close Website"
+        >
+          <Power className="w-4 h-4 text-red-500" />
+        </motion.button>
       </motion.div>
-
-      
 
       {/* Bottom Navbar */}
       <motion.div
         className={cn(
           "fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50",
           "transition-transform duration-300 ease-in-out",
-          showNavbar ? "translate-y-0" : "translate-y-full"
+          showNavbar
+            ? "translate-y-0"
+            : "translate-y-full"
         )}
         style={{ willChange: "transform" }}
         initial={{ y: 20, opacity: 0 }}
@@ -252,6 +312,9 @@ export const Navbar = () => {
               <a
                 key={item.name}
                 href={item.href}
+                onClick={(e) =>
+                  handleNavClick(e, item.href)
+                }
                 className={cn(
                   "p-2 rounded-full transition-colors flex flex-col items-center",
                   activeSection === item.href
@@ -261,9 +324,13 @@ export const Navbar = () => {
                 aria-label={item.name}
               >
                 <item.icon className="w-5 h-5" />
-                <span className="text-xs mt-1 hidden md:block">{item.name}</span>
+
+                <span className="text-xs mt-1 hidden md:block">
+                  {item.name}
+                </span>
               </a>
             ))}
+
             <div className="flex items-center px-2">
               <ThemeToggle />
             </div>
@@ -271,64 +338,56 @@ export const Navbar = () => {
         </div>
       </motion.div>
 
-     {showClosePopup && (
-  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-md">
+      {/* Close Portfolio Popup */}
+      {showClosePopup && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-md">
+          <motion.div
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.85, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 text-center max-w-sm w-full"
+          >
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 flex items-center justify-center gap-2">
+              <Power className="w-5 h-5 text-red-500" />
+              Close Portfolio?
+            </h3>
 
-    <motion.div
-      initial={{ scale: 0.85, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.85, opacity: 0 }}
-      transition={{ duration: 0.25 }}
-      className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 text-center max-w-sm w-full"
-    >
+            <p className="text-m text-gray-500 dark:text-gray-400 mb-6">
+              Thank you for visiting my portfolio <br />
+              ~ <span className="text-lg">{emoji}</span> Varsha SS
+            </p>
 
-      <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 flex items-center justify-center gap-2">
-        <Power className="w-5 h-5 text-red-500" />
-        Close Portfolio?
-      </h3>
+            <div className="flex justify-center gap-4">
+              {/* Cancel */}
+              <button
+                onMouseEnter={() => setEmoji("😇")}
+                onMouseLeave={() => setEmoji("😊")}
+                onClick={() => setShowClosePopup(false)}
+                className="px-4 py-2 rounded-lg border border-gray-400 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition font-medium"
+              >
+                Cancel
+              </button>
 
-      <p className="text-m text-gray-500 dark:text-gray-400 mb-6">
-        Thank you for visiting my portfolio <br />
-        ~ <span className="text-lg">{emoji}</span> Varsha SS
-      </p>
+              {/* OK */}
+              <button
+                onMouseEnter={() => setEmoji("😭")}
+                onMouseLeave={() => setEmoji("😊")}
+                onClick={() => {
+                  window.close();
 
-      <div className="flex justify-center gap-4">
-
-        {/* Cancel */}
-        <button
-          onMouseEnter={() => setEmoji("😇")}
-          onMouseLeave={() => setEmoji("😊")}
-          onClick={() => setShowClosePopup(false)}
-          className="px-4 py-2 rounded-lg border border-gray-400 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition font-medium"
-        >
-          Cancel
-        </button>
-
-        {/* OK */}
-        <button
-          onMouseEnter={() => setEmoji("😭")}
-          onMouseLeave={() => setEmoji("😊")}
-          onClick={() => {
-            window.close();
-
-            setTimeout(() => {
-              window.location.href = "about:blank";
-            }, 200);
-          }}
-          className="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 shadow-md hover:shadow-lg transition font-medium"
-        >
-          OK
-        </button>
-
-      </div>
-
-    </motion.div>
-
-  </div>
-)}
-
-
-
+                  setTimeout(() => {
+                    window.location.href = "about:blank";
+                  }, 200);
+                }}
+                className="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 shadow-md hover:shadow-lg transition font-medium"
+              >
+                OK
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </>
   );
 };
