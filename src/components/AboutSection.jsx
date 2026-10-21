@@ -95,7 +95,7 @@ export const AboutSection = () => {
 
   const tabContent = {
     personal:
-      "I am a Frontend Developer with a B.Tech in Information Technology, passionate about building modern and responsive web applications. I work primarily with React.js, Next.js, JavaScript, TypeScript, HTML5, CSS3, and Tailwind CSS, with a strong focus on clean UI, reusable components, and user-friendly digital experiences.",
+      "I am a Frontend Developer @Appnstruct with a B.Tech in Information Technology, passionate about building modern and responsive web applications. I work primarily with React.js, Next.js, JavaScript, TypeScript, HTML5, CSS3, and Tailwind CSS, with a strong focus on clean UI, reusable components, and user-friendly digital experiences.",
 
     education:
       "Completed my Bachelor of Technology (B.Tech) in Information Technology from Rajiv Gandhi College of Engineering and Technology, Pondicherry, from 2021 to 2025. Built a strong foundation in programming, web development, databases, and software engineering.",
@@ -135,7 +135,7 @@ export const AboutSection = () => {
 
   return (
     <section id="AboutSection"
-      className="relative py-20 px-6 bg-gradient-to-br from-background via-background to-primary/5 overflow-hidden"
+      className="relative pt-20 pb-28 sm:py-20 px-4 sm:px-6 bg-gradient-to-br from-background via-background to-primary/5 overflow-hidden"
     >
       {/* Header */}
 
@@ -161,21 +161,21 @@ export const AboutSection = () => {
         </p>
       </div>
 
-      <div className="grid xl:grid-cols-2 gap-10 max-w-5xl mx-auto">
+      <div className="grid xl:grid-cols-2 gap-10 max-w-5xl mx-auto w-full min-w-0">
 
         {/* LEFT SIDE */}
 
-        <div className="xl:col-span-2 space-y-8">
+        <div className="xl:col-span-2 space-y-8 w-full min-w-0 max-w-full">
 
           {/* Profile Card */}
 
-          <div className="bg-card/60 border border-border rounded-3xl p-8 backdrop-blur-xl shadow-2xl">
+          <div className="bg-card/60 border border-border rounded-3xl p-5 sm:p-8 backdrop-blur-xl shadow-2xl w-full min-w-0 max-w-full">
 
             <div className="flex flex-col md:flex-row gap-6 items-center">
 
               {/* Image */}
 
-              <div className="w-28 h-28 rounded-xl overflow-hidden border-4 border-primary/20">
+              <div className="w-28 h-28 rounded-xl overflow-hidden border-4 border-primary/20 shrink-0">
                 <img
                   src="/profile.png"
                   alt="Varsha"
@@ -185,7 +185,7 @@ export const AboutSection = () => {
 
               {/* Info */}
 
-              <div className="flex-1 text-center md:text-left">
+              <div className="flex-1 text-center md:text-left w-full">
 
                 <h2 className="text-3xl font-bold">
                   Varsha S.S
@@ -197,7 +197,7 @@ export const AboutSection = () => {
 
                 {/* Achievements */}
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
 
                   {achievements.map((a, i) => (
                     <div
@@ -225,46 +225,44 @@ export const AboutSection = () => {
 
             {/* Tabs */}
 
-            <div className="flex border-b border-border mt-8 mb-6">
-
-              {[
-                {
-                  id: "personal",
-                  label: "Personal",
-                  icon: <User className="h-4 w-4" />
-                },
-                {
-                  id: "education",
-                  label: "Education",
-                  icon: <GraduationCap className="h-4 w-4" />
-                },
-                {
-                  id: "internship",
-                  label: "Internship",
-                  icon: <Briefcase className="h-4 w-4" />
-                },
-                {
-                  id: "experience",
-                  label: "Experience",
-                  icon: <Briefcase className="h-4 w-4" />
-                }
-              ].map((tab) => (
-
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 py-3 flex items-center justify-center gap-2 font-medium transition ${
-                    activeTab === tab.id
-                      ? "text-primary border-b-2 border-primary"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {tab.icon}
-                  {tab.label}
-                </button>
-
-              ))}
-
+            <div className="w-full min-w-0 overflow-x-auto mt-8 mb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex min-w-max sm:min-w-full sm:w-full border-b border-border">
+                {[
+                  {
+                    id: "personal",
+                    label: "Personal",
+                    icon: <User className="h-4 w-4" />
+                  },
+                  {
+                    id: "education",
+                    label: "Education",
+                    icon: <GraduationCap className="h-4 w-4" />
+                  },
+                  {
+                    id: "internship",
+                    label: "Internship",
+                    icon: <Briefcase className="h-4 w-4" />
+                  },
+                  {
+                    id: "experience",
+                    label: "Experience",
+                    icon: <Briefcase className="h-4 w-4" />
+                  }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 py-3 px-3 sm:px-0 flex items-center justify-center gap-2 font-medium transition shrink-0 whitespace-nowrap ${
+                      activeTab === tab.id
+                        ? "text-primary border-b-2 border-primary"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {tab.icon}
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Tab Content */}
@@ -276,7 +274,7 @@ export const AboutSection = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="text-muted-foreground leading-relaxed"
+                className="text-muted-foreground leading-relaxed w-full max-w-full break-words"
               >
                 {tabContent[activeTab]}
               </motion.p>
@@ -287,7 +285,7 @@ export const AboutSection = () => {
 
           {/* Tech Stack */}
 
-          <div className="bg-card/60 border border-border rounded-3xl p-8">
+          <div className="bg-card/60 border border-border rounded-3xl p-5 sm:p-8 w-full min-w-0 max-w-full">
 
             <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <Code className="h-5 w-5 text-primary" />
@@ -331,7 +329,7 @@ export const AboutSection = () => {
 
           {/* Work together */}
 
-          <div className="bg-card/60 border border-border rounded-3xl p-6">
+          <div className="bg-card/60 border border-border rounded-3xl p-5 sm:p-6 w-full min-w-0 max-w-full">
 
             <h3 className="text-xl font-bold mb-4 text-center">
               Let's Build Something Great Together
@@ -382,7 +380,7 @@ export const AboutSection = () => {
 
           {/* Why choose me */}
 
-          <div className="bg-card/60 border border-border rounded-3xl p-6">
+          <div className="bg-card/60 border border-border rounded-3xl p-5 sm:p-6 w-full min-w-0 max-w-full">
 
             <h3 className="font-bold mb-4 flex items-center gap-2">
               <Star className="h-4 w-4 text-primary" />

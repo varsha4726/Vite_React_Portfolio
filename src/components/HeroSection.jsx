@@ -27,7 +27,7 @@ const [downloaded, setDownloaded] = useState(false);
   return (
     <section id="HeroSection"
       ref={ref}
-      className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-br from-background via-background/95 to-primary/10"
+      className="relative min-h-screen h-auto flex items-center justify-center px-4 sm:px-6 lg:px-8 pb-32 lg:pb-0 overflow-hidden bg-gradient-to-br from-background via-background/95 to-primary/10"
     >
 
       {/* Background glow */}
